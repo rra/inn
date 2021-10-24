@@ -1,0 +1,42 @@
+##  Automake rules for the control directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+controldir = $(CONTROLDIR)
+
+bin_SCRIPTS += control/controlbatch control/controlchan			\
+	control/docheckgroups control/perl-nocem control/pgpverify	\
+	control/signcontrol
+EXTRA_DIST += control/controlbatch.in control/controlchan.in		    \
+	control/docheckgroups.in control/perl-nocem.in control/pgpverify.in \
+	control/signcontrol.in
+CLEANFILES += control/controlbatch control/controlchan			\
+	control/docheckgroups control/perl-nocem control/pgpverify	\
+	control/signcontrol
+
+control/controlbatch: $(srcdir)/control/controlbatch.in support/fixscript
+	support/fixscript $(srcdir)/control/controlbatch.in $@
+
+control/controlchan: $(srcdir)/control/controlchan.in support/fixscript
+	support/fixscript $(srcdir)/control/controlchan.in $@
+
+control/docheckgroups: $(srcdir)/control/docheckgroups.in support/fixscript
+	support/fixscript $(srcdir)/control/docheckgroups.in $@
+
+control/perl-nocem: $(srcdir)/control/perl-nocem.in support/fixscript
+	support/fixscript $(srcdir)/control/perl-nocem.in $@
+
+control/pgpverify: $(srcdir)/control/pgpverify.in support/fixscript
+	support/fixscript $(srcdir)/control/pgpverify.in $@
+
+control/signcontrol: $(srcdir)/control/signcontrol.in support/fixscript
+	support/fixscript $(srcdir)/control/signcontrol.in $@
+
+dist_control_SCRIPTS = control/modules/checkgroups.pl			\
+	control/modules/ihave.pl control/modules/newgroup.pl		\
+	control/modules/rmgroup.pl control/modules/sendme.pl		\
+	control/modules/sendsys.pl control/modules/senduuname.pl	\
+	control/modules/version.pl

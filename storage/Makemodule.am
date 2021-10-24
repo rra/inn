@@ -37,6 +37,9 @@ storage_ovsqlite_ovsqlite-server_LIBADD = history/libinnhist.la	\
 	storage/libstorage.la lib/libinn.la $(SQLITE3_LIBS) $(ZLIB_LIBS)
 EXTRA_DIST += storage/ovsqlite/sql-init.sql storage/ovsqlite/sql-main.sql \
 	storage/ovsqlite/sqlite-helper-gen.in
+CLEANFILES += storage/ovsqlite/sqlite-helper-gen		\
+	storage/ovsqlite/sql-init.c storage/ovsqlite/sql-init.h	\
+	storage/ovsqlite/sql-main.c storage/ovsqlite/sql-main.h
 
 storage/ovsqlite/sqlite-helper-gen: \
 		$(srcdir)/storage/ovsqlite/sqlite-helper-gen.in \

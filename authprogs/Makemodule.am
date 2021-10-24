@@ -1,0 +1,40 @@
+##  Automake rules for the authprogs directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+authdir = $(bindir)/auth
+authpasswddir = $(authdir)/passwd
+authresolvdir = $(authdir)/resolv
+
+noinst_LTLIBRARIES = authprogs/libauth.la
+authprogs_libauth_la_SOURCES = authprogs/libauth.c authprogs/libauth.h
+authprogs_libauth_la_LIBADD = lib/libinn.la
+
+if BUILD_AUTH_KRB5
+    authpasswd_PROGRAMS += authprogs/auth_krb5
+    authprogs_auth_krb5_SOURCES = auth_krb5.c
+    authprogs_auth_krb5_CPPFLAGS = $(KRB5_CPPFLAGS) $(AM_CPPFLAGS)
+    authprogs_auth_krb5_LDFLAGS = $(KRB5_LDFLAGS) $(AM_LDFLAGS)
+    authprogs_auth_krb5_LIBADD = authprogs/libauth.la lib/libinn.la
+endif
+
+authpasswd_PROGRAMS += authprogs/ckpasswd
+authprogs_ckpasswd_SOURCES = authprogs/ckpasswd.c
+authprogs_ckpasswd_CPPFLAGS = $(DBM_CPPFLAGS)
+authprogs_ckpasswd_LIBADD = authprogs/libauth.la lib/libinn.la \
+	$(CRYPT_LIBS) $(SHADOW_LIBS) $(PAM_LIBS) $(DBM_LIBS)
+
+authpasswd_PROGRAMS += authprogs/radius
+authprogs_radius_SOURCES = authprogs/radius.c
+authprogs_radius_LIBADD = authprogs/libauth.la lib/libinn.la
+
+authresolv_PROGRAMS += authprogs/domain
+authprogs_domain_SOURCES = authprogs/domain.c
+authprogs_domain_LIBADD = authprogs/libauth.la lib/libinn.la
+
+authresolv_PROGRAMS += authprogs/ident
+authprogs_ident_SOURCES = authprogs/ident.c
+authprogs_ident_LIBADD = authprogs/libauth.la lib/libinn.la

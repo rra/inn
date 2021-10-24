@@ -25,55 +25,16 @@ dnl bother checking for it.  Compile-time errors often produce a lot more
 dnl useful information for someone debugging a problem than configure-time
 dnl errors.
 
+AC_PREREQ([2.64])
 AC_INIT([INN], [2.7.0], [inn-workers@lists.isc.org],
     [inn], [https://www.isc.org/othersoftware/])
 AC_PREREQ([2.64])
-AC_CONFIG_AUX_DIR([support])
-
-dnl Ignore Automake conditionals (called in a few m4 macros) as INN does not
-dnl uses Automake yet.
-m4_define_default([AM_CONDITIONAL], [:])
-
-dnl Lots of our macros are stored in separate files for ease of maintenance.
-m4_include([m4/aux-libs.m4])
-m4_include([m4/bdb.m4])
-m4_include([m4/cc-c-o.m4])
-m4_include([m4/cc-flags.m4])
-m4_include([m4/compress.m4])
-m4_include([m4/inet-ntoa.m4])
-m4_include([m4/iov-max.m4])
-m4_include([m4/krb5-config.m4])
-m4_include([m4/krb5.m4])
-m4_include([m4/large-fpos.m4])
-m4_include([m4/lib-depends.m4])
-m4_include([m4/lib-helper.m4])
-m4_include([m4/lib-pathname.m4])
-m4_include([m4/libtool.m4])
-m4_include([m4/lt~obsolete.m4])
-m4_include([m4/ltoptions.m4])
-m4_include([m4/ltsugar.m4])
-m4_include([m4/ltversion.m4])
-m4_include([m4/mmap.m4])
-m4_include([m4/modes.m4])
-m4_include([m4/openssl.m4])
-m4_include([m4/pam-const.m4])
-m4_include([m4/paths.m4])
-m4_include([m4/perl.m4])
-m4_include([m4/pkg.m4])
-m4_include([m4/prog-ensure.m4])
-m4_include([m4/python.m4])
-m4_include([m4/sasl.m4])
-m4_include([m4/sendfd.m4])
-m4_include([m4/sendmail.m4])
-m4_include([m4/snprintf.m4])
-m4_include([m4/socket-unix.m4])
-m4_include([m4/socket.m4])
-m4_include([m4/sqlite3.m4])
-m4_include([m4/syslog.m4])
-m4_include([m4/systemd.m4])
-m4_include([m4/users.m4])
-m4_include([m4/vamacros.m4])
-m4_include([m4/zlib.m4])
+AC_CONFIG_AUX_DIR([build-aux])
+AC_CONFIG_LIBOBJ_DIR([portable])
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE([1.11 dist-xz foreign silent-rules subdir-objects
+    -Wall -Werror])
+AM_MAINTAINER_MODE
 
 dnl By default, INN installs into its own independent tree.  Support for FHS
 dnl is not yet implemented; once it is, this will need to become conditional
@@ -83,34 +44,18 @@ AC_PREFIX_DEFAULT([/usr/local/news])
 dnl Make sure $prefix is set so that we can use it internally.
 test x"$prefix" = xNONE && prefix="$ac_default_prefix"
 
-dnl A few tests need to happen before any of the libtool tests.  We
-dnl therefore lift them up to the top of the file.  (This is probably no
-dnl longer needed now that we're running LT_INIT unconditionally, but
-dnl we'll leave it alone until we switch to Automake.)
+dnl Detect unexpanded macros.
+m4_pattern_forbid([^PKG_])
+m4_pattern_forbid([^_?INN_])
+
+dnl AM_PROG_AR is required for Automake 1.12 by Libtool but not defined at all
+dnl (or needed) in Automake 1.11.  Work around this bug.
 AC_PROG_CC
 AC_USE_SYSTEM_EXTENSIONS
-AC_SEARCH_LIBS([strerror], [cposix])
-INN_PROG_CC_C_O
-AC_CANONICAL_HOST
-
-dnl Configure libtool and set the variables that we used to use when we
-dnl supported builds without libtool.
-LT_INIT
-EXTLIB='la'
-EXTOBJ='lo'
-LIBTOOL='$(top)/libtool'
-LIBTOOLCC='$(top)/libtool --mode=compile'
-LIBTOOLINST='$(top)/libtool --mode=install'
-LIBTOOLLD='$(top)/libtool --mode=link'
-LIBTOOLLDDEPS='$(top)/libtool --mode=link --preserve-dup-deps'
-CCOUTPUT='-c -o $@ $<'
-AC_SUBST(EXTLIB)
-AC_SUBST(EXTOBJ)
-AC_SUBST(LIBTOOLCC)
-AC_SUBST(LIBTOOLINST)
-AC_SUBST(LIBTOOLLD)
-AC_SUBST(LIBTOOLLDDEPS)
-AC_SUBST(CCOUTPUT)
+AM_PROG_CC_C_O
+m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
 
 dnl If PIC objects are not wanted (--with-pic=no), an error occurs during
 dnl the build of shared libraries.  Unfortunately, $pic_mode is set after
@@ -261,7 +206,7 @@ AS_IF([test x"$DO_PYTHON" = xDO],
 
 dnl Set some configuration file defaults from the machine hostname.
 HOSTNAME=`hostname 2> /dev/null || uname -n`
-AC_SUBST(HOSTNAME)
+AC_SUBST([HOSTNAME])
 
 dnl Checks for programs.
 AC_PROG_GCC_TRADITIONAL
@@ -281,15 +226,8 @@ case "$CPP" in
     ;;
 esac
 
+AC_CANONICAL_HOST
 case "$host" in
-
-dnl When building on Linux, we need to compile with _GNU_SOURCE to get the
-dnl right definitions of pread and pwrite and to get some other functions
-dnl (like asprintf) that we use.
-*linux*)
-    AC_DEFINE([_GNU_SOURCE], [1],
-        [Define if compiling on Linux to get prototypes for some functions.])
-    ;;
 
 dnl Detect BSD/OS for later use in nnrpd code.
 *-bsdi*)
@@ -375,6 +313,9 @@ dnl adding libraries when the function is found in libc, and use
 dnl INN_SEARCH_AUX_LIBS for libraries that are only used by particular
 dnl subsections of INN.
 
+dnl Required for INTERACTIVE Systems Corporation Unix.
+AC_SEARCH_LIBS([strerror], [cposix])
+
 dnl Check for setproctitle in libc first, then libutil if not found there.
 dnl We have a replacement function if we can't find it, and then we also need
 dnl to check for pstat.
@@ -433,10 +374,9 @@ INN_LIB_SQLITE3_OPTIONAL
 INN_LIB_SYSTEMD_DAEMON_OPTIONAL
 INN_LIB_ZLIB_OPTIONAL
 
-dnl If Kerberos is found, define KRB5_AUTH to auth_krb5 so as to build
-dnl that program.
-AS_IF([test x"$inn_use_KRB5" = xtrue], [KRB5_AUTH=auth_krb5])
-AC_SUBST([KRB5_AUTH])
+dnl Define an Automake conditional controlling whether to build the auth_krb5
+dnl authenticator program.
+AM_CONDITIONAL([BUILD_AUTH_KRB5], [test x"$inn_use_KRB5" = xtrue])
 
 dnl If Berkeley DB is found, check whether the Berkeley DB library
 dnl has ndbm support.

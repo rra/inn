@@ -9,17 +9,18 @@
 ##  The name Makemodule.am was taken from util-linux, which uses a similar
 ##  construction.
 
-##  This version information is used to generate include/inn/version.h and is
-##  used by INN for banner and local version identification.  The version
+##  This version information is used to generate include/inn/version.h and
+##  is used by INN for banner and local version identification.  The version
 ##  identification string will be "$VERSION ($VERSION_EXTRA)", with the
 ##  parentheses omitted if $VERSION_EXTRA is empty (as it is for major
 ##  releases).  If you make extensive local modifications to INN, you can
 ##  put your own version information in $VERSION_EXTRA.  If it's set to
 ##  "prerelease", the build time will be automatically included.
-##      If you modify these two strings, you must encode them in UTF-8
-##      (using only US-ASCII characters is consequently also fine) and
-##      keep their length reasonable; otherwise, your news server will not
-##      be complying with the NNTP protocol.
+##
+##  If you modify these two strings, you must encode them in UTF-8 (using
+##  only US-ASCII characters is consequently also fine) and keep their
+##  length reasonable; otherwise, your news server will not be complying
+##  with the NNTP protocol.
 
 VERSION         = 2.7.0
 VERSION_EXTRA   = prerelease
@@ -36,6 +37,18 @@ LIBINN_VERSION     = 6:1:0
 LIBINNHIST_VERSION = 3:4:0
 LIBSTORAGE_VERSION = 3:4:0
 
+##  Installation settings.  The file installation modes are determined by
+##  configure; inews and rnews are special and have configure flags to
+##  control how they're installed.  See INSTALL for more information.
+
+RUNASUSER	= @RUNASUSER@
+RUNASGROUP	= @RUNASGROUP@
+RNEWSGROUP	= @RNEWSGRP@
+
+INEWSMODE	= @INEWSMODE@
+RNEWSMODE	= @RNEWSMODE@
+FILEMODE	= @FILEMODE@
+
 ##  Paths and command lines for programs used only by the maintainers to
 ##  regenerate dependencies, documentation, and the like.
 
@@ -48,5 +61,21 @@ POD2TEXT        = pod2text -s -l
 
 AM_CPPFLAGS	= -I$(srcdir)/include
 
-##  Clean rules.
+##  Include modules for all subdirectories.
 
+include $(srcdir)/authprogs/Makemodule.am
+include $(srcdir)/backends/Makemodule.am
+include $(srcdir)/control/Makemodule.am
+include $(srcdir)/expire/Makemodule.am
+include $(srcdir)/history/Makemodule.am
+include $(srcdir)/include/Makemodule.am
+include $(srcdir)/innd/Makemodule.am
+include $(srcdir)/lib/Makemodule.am
+include $(srcdir)/nnrpd/Makemodule.am
+include $(srcdir)/storage/Makemodule.am
+
+##  Various components of INN use different permissions or ownership.  The
+##  individual per-directory modules add hooks to INSTALL_EXEC_HOOKS, which
+##  are run here.
+
+install-exec-hook: $(INSTALL_EXEC_HOOKS)

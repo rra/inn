@@ -1,0 +1,51 @@
+##  Automake rules for the expire directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+bin_PROGRAMS += expire/convdate
+expire_convdate_SOURCES = expire/convdate.c
+expire_convdate_LIBADD = lib/libinn.la
+
+bin_PROGRAMS += expire/expire
+expire_expire_SOURCES = expire/expire.c
+expire_expire_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_PROGRAMS += expire/expireover
+expire_expireover_SOURCES = expire/expireover.c
+expire_expireover_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_PROGRAMS += expire/fastrm
+expire_fastrm_SOURCES = expire/fastrm.c
+expire_fastrm_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_PROGRAMS += expire/grephistory
+expire_grephistory_SOURCES = expire/grephistory.c
+expire_grephistory_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_PROGRAMS += expire/makedbz
+expire_makedbz_SOURCES = expire/makedbz.c
+expire_makedbz_LIBADD = lib/libinn.la
+
+bin_PROGRAMS += expire/makehistory
+expire_makehistory_SOURCES = expire/makehistory.c
+expire_makehistory_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_PROGRAMS += expire/prunehistory
+expire_prunehistory_SOURCES = expire/prunehistory.c
+expire_prunehostiry_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_SCRIPTS += expire/expirerm
+EXTRA_DIST += expire/expirerm.in
+CLEANFILES += expire/expirerm
+
+expire/expirerm: $(srcdir)/expire/expirerm.in support/fixscript
+	support/fixscript $(srcdir)/expire/expirerm.in $@
