@@ -1,0 +1,79 @@
+##  Automake rules for the storage directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+lib_LTLIBRARIES += storage/libstorage.la
+storage_libstorage_la_SOURCES = storage/buffindexed/buffindexed.c	 \
+	storage/buffindexed/shmem.c storage/cnfs/cnfs.c storage/expire.c \
+	storage/interface.c storage/ov.c storage/ovdb/ovdb.c		 \
+	storage/overdata.c storage/overview.c storage/ovmethods.c	 \
+	storage/ovsqlite/ovsqlite-private.c storage/ovsqlite/ovsqlite.c	 \
+	storage/timecaf/caf.c storage/timecaf/timecaf.c			 \
+	storage/timehash/timehash.c storage/tradindexed/tdx-cache.c	 \
+	storage/tradindexed/tdx-data.c storage/tradindexed/tdx-group.c	 \
+	storage/tradindexed/tradindexed.c storage/tradspool/tradspool.c	 \
+	storage/trash/trash.c
+storage_libstorage_la_CPPFLAGS = -I$(srcdir)/storage $(BDB_CPPFLAGS) \
+	$(ZLIB_CPPFLAGS) $(AM_CPPFLAGS)
+storage_libstorage_la_LDFLAGS = -version-info $(LIBSTORAGE_VERSION) \
+	$(BDB_LDFLAGS) $(ZLIB_LDFLAGS) $(AM_LDFLAGS)
+storage_libstorage_la_LIBADD = lib/libinn.la $(BDB_LIBS) $(ZLIB_LIBS)
+
+bin_PROGRAMS += storage/ovsqlite/ovsqlite-server
+noinst_SCRIPTS += storage/ovsqlite/sqlite-helper-gen
+storage_ovsqlite_ovsqlite-server_SOURCES = ovsqlite/ovsqlite-private.c	\
+	ovsqlite/ovsqlite-private.h ovsqlite/ovsqlite-server.c		\
+	ovsqlite/sql-init.c ovsqlite/sql-init.h ovsqlite/sql-main.c	\
+	ovsqlite/sql-main.h ovsqlite/sqlite-helper.c			\
+	ovsqlite/sqlite-helper.h
+storage_ovsqlite_ovsqlite-server_CPPFLAGS = -I(srcdir)/storage \
+	$(SQLITE3_CPPFLAGS) $(ZLIB_CPPFLAGS) $(AM_CPPFLAGS)
+storage_ovsqlite_ovsqlite-server_LDFLAGS = $(SQLITE3_LDFLAGS) \
+	$(ZLIB_LDFLAGS) $(AM_LDFLAGS)
+storage_ovsqlite_ovsqlite-server_LIBADD = history/libinnhist.la	\
+	storage/libstorage.la lib/libinn.la $(SQLITE3_LIBS) $(ZLIB_LIBS)
+EXTRA_DIST += storage/ovsqlite/sql-init.sql storage/ovsqlite/sql-main.sql \
+	storage/ovsqlite/sqlite-helper-gen.in
+
+storage/ovsqlite/sqlite-helper-gen: \
+		$(srcdir)/storage/ovsqlite/sqlite-helper-gen.in \
+		support/fixscript
+	support/fixscript -i $(srcdir)/storage/ovsqlite/sqlite-helper-gen.in $@
+
+storage/ovsqlite/sql-init.c: $(srcdir)/storage/ovsqlite/sql-init.sql \
+		storage/ovsqlite/sqlite-helper-gen
+	set -e; if [ x"$(builddir)" != x"$(srcdir)" ]; then		  \
+	    cp $(srcdir)/storage/ovsqlite/sql-init.sql storage/ovsqlite/; \
+	fi
+	storage/ovsqlite/sqlite-helper-gen storage/ovsqlite/sql-init.sql
+
+storage/ovsqlite/sql-init.h: ovsqlite/sql-init.c ;
+
+storage/ovsqlite/sql-main.c: $(srcdir)/storage/ovsqlite/sql-main.sql \
+		storage/ovsqlite/sqlite-helper-gen
+	set -e; if [ x"$(builddir)" != x"$(srcdir)" ]; then		  \
+	    cp $(srcdir)/storage/ovsqlite/sql-main.sql storage/ovsqlite/; \
+	fi
+	storage/ovsqlite/sqlite-helper-gen storage/ovsqlite/sql-main.sql
+
+storage/ovsqlite/sql-main.h: ovsqlite/sql-main.c ;
+
+bin_PROGRAMS += storage/tradindexed/tdx-util
+storage_tradindexed_tdx-util_SOURCES = tradindexed/tdx-util.c
+storage_tradindexed_tdx-util_LIBADD = history/libinnhist.la \
+	storage/libstorage.la lib/libinn.la
+
+EXTRA_PROGRAMS += storage/buffindexed/buffindexed_d
+storage_buffindexed_buffindexed_d_SOURCES = buffindexed/buffindexed.c
+storage_buffindexed_buffindexed_d_CPPFLAGS = -I$(srcdir)/storage \
+	-DBUFF_DEBUG $(AM_CPPFLAGS)
+storage_buffindexed_buffindexed_d_LIBADD = history/libinnhist.la \
+	storage/libstorage.la lib/libinn.la
+
+EXTRA_PROGRAMS += storage/ovtest
+storage_ovtest_SOURCES = ov.c
+storage_ovtest_CPPFLAGS = -I$(srcdir)/storage -D_TEST_ $(AM_CPPFLAGS)
+storage_ovtest_LIBADD = storage/libstorage.la lib/libinn.la

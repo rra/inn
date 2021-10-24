@@ -1,0 +1,27 @@
+##  Automake rules for the nnrpd directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+bin_PROGRAMS += nnrpd/nnrpd
+nnrpd_nnrpd_SOURCES = nnrpd/article.c nnrpd/auth-ext.c nnrpd/cache.c	  \
+	nnrpd/cache.h nnrpd/commands.c nnrpd/group.c nnrpd/line.c	  \
+	nnrpd/list.c nnrpd/misc.c nnrpd/newnews.c nnrpd/nnrpd.c		  \
+	nnrpd/nnrpd.h nnrpd/perm.c nnrpd/post.c nnrpd/post.h nnrpd/sasl.c \
+	nnrpd/tls.c nnrpd/tls.h nnrpd/track.c nnrpd/zlib.c
+nnrpd_nnrpd_CPPFLAGS = $(OPENSSL_CPPFLAGS) $(SASL_CPPFLAGS) $(ZLIB_CPPFLAGS) \
+	$(AM_CPPFLAGS)
+nnrpd_nnrpd_LDFLAGS = $(OPENSSL_LDFLAGS) $(SASL_LDFLAGS) $(ZLIB_LDFLAGS) \
+	$(AM_LDFLAGS)
+nnrpd_nnrpd_LIBADD = nnrpd/perl.la nnrpd/python.la history/libinnhist.la \
+	storage/libstorage.la lib/libinn.la $(SASL_LIBS) $(OPENSSL_LIBS) \
+	$(CRYPTO_LIBS) $(ZLIB_LIBS)
+noinst_LTLIBRARIES += nnrpd/perl.la nnrpd/python.la
+nnrpd_perl_la_SOURCES = nnrpd/perl.c
+nnrpd_perl_la_CPPFLAGS = $(PERL_CPPFLAGS) $(AM_CPPFLAGS)
+nnrpd_perl_la_LIBADD = lib/perl.la $(PERL_LIBS)
+nnrpd_python_la_SOURCES = nnrpd/python.c
+nnrpd_python_la_CPPFLAGS = $(PYTHON_CPPFLAGS) $(AM_CPPFLAGS)
+nnrpd_python_la_LIBADD = $(PYTHON_LIBS)

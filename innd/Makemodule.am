@@ -1,0 +1,26 @@
+##  Automake rules for the innd directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+bin_PROGRAMS += innd/innd
+innd_innd_SOURCES = innd/art.c innd/cc.c innd/chan.c innd/icd.c innd/innd.c \
+	innd/innd.h innd/keywords.c innd/lc.c innd/nc.c innd/newsfeeds.c    \
+	innd/ng.c innd/proc.c innd/rc.c innd/site.c innd/status.c	    \
+	innd/util.c innd/wip.c
+innd_innd_CFLAGS = $(SYSTEMD_CFLAGS) $(AM_CFLAGS)
+innd_innd_LIBADD = innd/perl.la innd/python.la history/libinnhist.la	    \
+	storage/libstorage.la lib/libinn.la $(SYSTEMD_LIBS) $(REGEX_LIBS)
+noinst_LTLIBRARIES += innd/perl.la innd/python.la
+innd_perl_la_SOURCES = innd/perl.c
+innd_perl_la_CPPFLAGS = $(PERL_CPPFLAGS) $(AM_CPPFLAGS)
+innd_perl_la_LIBADD = lib/perl.la $(PERL_LIBS)
+innd_python_la_SOURCES = innd/python.c
+innd_python_la_CPPFLAGS = $(PYTHON_CPPFLAGS) $(AM_CPPFLAGS)
+innd_python_la_LIBADD = $(PYTHON_LIBS)
+
+bin_PROGRAMS += innd/tinyleaf
+innd_tinyleaf_SOURCES = tinyleaf.c
+innd_tinyleaf_LIBADD = lib/libinn.la

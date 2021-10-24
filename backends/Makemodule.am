@@ -1,0 +1,50 @@
+##  Automake rules for the backends directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+bin_SCRIPTS += backends/actmerge backends/actsyncd backends/mod-active	\
+	backends/news2mail backends/nntpsend backends/send-ihave	\
+	backends/send-nntp backends/send-uucp backends/sendinpaths	\
+	backends/sendxbatches
+EXTRA_DIST += backends/actmerge.in backends/actsyncd.in			   \
+	backends/mod-active.in backends/news2mail.in backends/nntpsend.in  \
+	backends/send-ihave.in backends/send-nntp.in backends/send-uucp.in \
+	backends/sendinpaths.in backends/sendxbatches.in
+
+backends/actmerge: $(srcdir)/backends/actmerge.in support/fixscript
+	support/fixscript $(srcdir)/backends/actmerge.in $@
+
+backends/actsyncd: $(srcdir)/actsyncd.in support/fixscript
+	support/fixscript $(srcdir)/backends/actsyncd.in $@
+
+backends/mod-active: $(srcdir)/mod-active.in support/fixscript
+	support/fixscript $(srcdir)/backends/mod-active.in $@
+
+backends/news2mail: $(srcdir)/news2mail.in support/fixscript
+	support/fixscript $(srcdir)/backends/news2mail.in $@
+
+backends/nntpsend: $(srcdir)/nntpsend.in support/fixscript
+	support/fixscript $(srcdir)/backends/nntpsend.in $@
+
+backends/send-ihave: $(srcdir)/send-ihave.in support/fixscript
+	support/fixscript $(srcdir)/backends/send-ihave.in $@
+
+backends/send-nntp: $(srcdir)/send-nntp.in support/fixscript
+	support/fixscript $(srcdir)/backends/send-nntp.in $@
+
+backends/send-uucp: $(srcdir)/send-uucp.in support/fixscript
+	support/fixscript $(srcdir)/backends/send-uucp.in $@
+
+backends/sendinpaths: $(srcdir)/sendinpaths.in support/fixscript
+	support/fixscript $(srcdir)/backends/sendinpaths.in $@
+
+backends/sendxbatches: $(srcdir)/sendxbatches.in support/fixscript
+	support/fixscript $(srcdir)/backends/sendxbatches.in $@
+
+bin_PROGRAMS += backends/actsync
+backends_actsync_SOURCES = backends/actsync.c
+backends_actsync_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la

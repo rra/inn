@@ -1,0 +1,13 @@
+##  Automake rules for the history directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+lib_LTLIBRARIES += history/libinnhist.la
+history_libinnhist_la_SOURCES = history/his.c history/hismethods.c \
+	history/hisv6/hisv6.c
+history_libinnhist_la_CPPFLAGS = -I$(srcdir)/history
+history_libinnhist_la_LDFLAGS = -version-info $(LIBINNHIST_VERSION)
+history_libinnhist_la_LIBADD = storage/libstorage.la lib/libinn.la

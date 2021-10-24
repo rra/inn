@@ -1,0 +1,34 @@
+##  Automake rules for the lib directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+lib_LTLIBRARIES += lib/libinn.la
+lib_libinn_la_SOURCES = include/conffile.h include/innperl.h		   \
+	include/portable/getaddrinfo.h include/portable/getnameinfo.h	   \
+	include/portable/macros.h include/portable/mmap.h		   \
+	include/portable/sd-daemon.h include/portable/setproctitle.h	   \
+	include/portable/socket-unix.h include/portable/socket.h	   \
+	include/portable/stdbool.h include/portable/system.h		   \
+	include/portable/uio.h lib/argparse.c lib/artnumber.c lib/buffer.c \
+	lib/cleanfrom.c lib/clientactive.c lib/clientlib.c lib/commands.c  \
+	lib/concat.c lib/conffile.c lib/confparse.c lib/daemonize.c	   \
+	lib/date.c lib/dbz.c lib/defdist.c lib/dispatch.c lib/fdflag.c	   \
+	lib/fdlimit.c lib/getfqdn.c lib/getmodaddr.c lib/hash.c		   \
+	lib/hashtab.c lib/headers.c lib/hex.c lib/innconf.c lib/inndcomm.c \
+	lib/list.c lib/localopen.c lib/lockfile.c lib/makedir.c lib/md5.c  \
+	lib/messageid.c lib/messages.c lib/mmap.c lib/network.c		   \
+	lib/network-innbind.c lib/newsuser.c lib/nntp.c lib/qio.c	   \
+	lib/radix32.c lib/readin.c lib/remopen.c lib/reservedfd.c	   \
+	lib/resource.c lib/sendarticle.c lib/sendpass.c lib/sequence.c	   \
+	lib/timer.c lib/tst.c lib/uwildmat.c lib/vector.c lib/wire.c	   \
+	lib/xfopena.c lib/xmalloc.c lib/xsignal.c lib/xwrite.c
+lib_libinn_la_LDFLAGS = -version-info $(LIBINN_VERSION)
+lib_libinn_la_LIBADD = $(LTLIBOBJS)
+
+noinst_LTLIBRARIES += lib/perl.la
+lib_perl_la_SOURCES = include/ppport.h lib/perl.c
+lib_perl_la_CPPFLAGS = $(PERL_CPPFLAGS) $(AM_CPPFLAGS)
+lib_perl_la_LDFLAGS = $(PERL_LIBS)

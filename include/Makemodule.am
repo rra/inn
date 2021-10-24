@@ -1,0 +1,62 @@
+##  Automake rules for the include directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+innincludedir = $(includedir)/inn
+inninclude_HEADERS = include/inn/buffer.h include/inn/concat.h		  \
+	include/inn/confparse.h include/inn/dbz.h include/inn/dispatch.h  \
+	include/inn/fdflag.h include/inn/hashtab.h include/inn/fdflag.h	  \
+	include/inn/hashtab.h include/inn/history.h include/inn/history.h \
+	include/inn/innconf.h include/inn/inndcomm.h include/inn/libinn.h \
+	include/inn/list.h include/inn/macros.h include/inn/md5.h	  \
+	include/inn/messages.h include/inn/mmap.h			  \
+	include/inn/network-innbind.h include/inn/network.h		  \
+	include/inn/newsuser.h include/inn/nntp.h include/inn.options.h	  \
+	include/inn/ov.h include/inn/overview.h include/inn/paths.h	  \
+	include/inn/portable-getaddrinfo.h				  \
+	include/inn/portable-getnameinfo.h include/inn/portable-macros.h  \
+	include/inn/portable-socket.h include/inn/portable-stdbool.h	  \
+	include/inn/qio.h include/inn/sequence.h include/inn/storage.h	  \
+	include/inn/system.h include/inn/timer.h include/inn/tst.h	  \
+	include/inn/utility.h include/inn/vector.h include/inn/version.h  \
+	include/inn/wire.h include/inn/xmalloc.h include/inn/xwrite.h
+CLEANFILES += include/inn/portable-getaddrinfo.h			 \
+	include/inn/portable-getnameinfo.h include/inn/portable-macros.h \
+	include/inn/portable-socket.h include/inn/portable-stdbool.h	 \
+	include/inn/system.h include/inn/version.h
+
+include/inn/portable-getaddrinfo.h: include/portable/getaddrinfo.h
+	$(SED) -e 's/"portable\//"inn\/portable-/g' -e '/"config\.h"/d' \
+	    include/portable/getaddrinfo.h > $@
+
+include/inn/portable-getnameinfo.h: include/portable/getnameinfo.h
+	$(SED) -e 's/"portable\//"inn\/portable-/g' -e '/"config\.h"/d' \
+	    include/portable/getnameinfo.h > $@
+
+include/inn/portable-macros.h: include/portable/macros.h
+	$(SED) 's/"portable\//"inn\/portable-/g' include/portable/macros.h > $@
+
+include/inn/portable-socket.h: include/portable/socket.h
+	$(SED) -e 's/"portable\//"inn\/portable-/g' -e '/"config\.h"/d'\
+	    include/portable/socket.h > $@
+
+include/inn/portable-stdbool.h: include/portable/stdbool.h
+	$(SED) -e 's/"portable\//"inn\/portable-/g'		\
+	       -e 's/HAVE__BOOL/INN_HAVE__BOOL/g'		\
+	       -e 's/HAVE_STDBOOL_H/INN_HAVE_STDBOOL_H/g'	\
+	    include/portable/stdbool.h > $@
+
+include/inn/system.h: include/config.h $(srcdir)/support/mksystem
+	$(srcdir)/support/mksystem $(AWK) config.h > $@
+
+include/inn/version.h: $(srcdir)/support/mkversion $(buildir)/Makefile
+	$(srcdir)/support/mkversion '$(VERSION)' '$(VERSION_EXTRA)' > $@
+
+##  Include files must be built before any other source.
+BUILT_SOURCES += include/inn/portable-getaddrinfo.h			 \
+	include/inn/portable-getnameinfo.h include/inn/portable-macros.h \
+	include/inn/portable-socket.h include/inn/portable-stdbool.h	 \
+	include/inn/system.h include/inn/version.h
