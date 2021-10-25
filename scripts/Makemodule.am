@@ -1,0 +1,58 @@
+##  Automake rules for the scripts directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+bin_SCRIPTS += scripts/inncheck scripts/innmail scripts/innreport	\
+	scripts/innstat scripts/innupgrade scripts/innwatch		\
+	scripts/news.daily scripts/rc.news scripts/scanlogs		\
+	scripts/simpleftp scripts/tally.control scripts/writelog
+EXTRA_DIST += scripts/inncheck.in scripts/innmail.in scripts/innreport.in \
+	scripts/innstat.in scripts/innupgrade.in scripts/innwatch.in	  \
+	scripts/news.daily.in scripts/rc.news.in scripts/scanlogs.in	  \
+	scripts/simpleftp.in scripts/tally.control.in scripts/writelog.in
+CLEANFILES += scripts/inncheck scripts/innmail scripts/innreport	\
+	scripts/innstat scripts/innupgrade scripts/innwatch		\
+	scripts/news.daily scripts/rc.news scripts/scanlogs		\
+	scripts/simpleftp scripts/tally.control scripts/writelog
+
+scripts/inncheck: $(srcdir)/scripts/inncheck.in support/fixscript
+	support/fixscript $(srcdir)/scripts/inncheck.in $@
+
+scripts/innmail: $(srcdir)/scripts/innmail.in support/fixscript
+	support/fixscript $(srcdir)/scripts/innmail.in $@
+
+scripts/innreport: $(srcdir)/scripts/innreport.in support/fixscript
+	support/fixscript $(srcdir)/scripts/innreport.in $@
+
+scripts/innstat: $(srcdir)/scripts/innstat.in support/fixscript
+	support/fixscript $(srcdir)/scripts/innstat.in $@
+
+scripts/innupgrade: $(srcdir)/scripts/innupgrade.in support/fixscript
+	support/fixscript -i $(srcdir)/scripts/innupgrade.in $@
+
+scripts/innwatch: $(srcdir)/scripts/innwatch.in support/fixscript
+	support/fixscript $(srcdir)/scripts/innwatch.in $@
+
+scripts/news.daily: $(srcdir)/scripts/news.daily.in support/fixscript
+	support/fixscript $(srcdir)/scripts/news.daily.in $@
+
+scripts/rc.news: $(srcdir)/scripts/rc.news.in support/fixscript
+	support/fixscript $(srcdir)/scripts/rc.news.in $@
+
+scripts/scanlogs: $(srcdir)/scripts/scanlogs.in support/fixscript
+	support/fixscript $(srcdir)/scripts/scanlogs.in $@
+
+scripts/simpleftp: $(srcdir)/scripts/simpleftp.in support/fixscript
+	support/fixscript -i $(srcdir)/scripts/simpleftp.in $@
+
+scripts/tally.control: $(srcdir)/scripts/tally.control.in support/fixscript
+	support/fixscript $(srcdir)/scripts/tally.control.in $@
+
+scripts/writelog: $(srcdir)/scripts/writelog.in support/fixscript
+	support/fixscript $(srcdir)/scripts/writelog.in $@
+
+lib_DATA = scripts/innreport_inn.pm scripts/innshellvars \
+	scripts/innshellvars.pl scripts/innshellvars.tcl

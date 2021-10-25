@@ -6,23 +6,19 @@
 ##  directory.
 
 bin_PROGRAMS += backends/actsync
-backends_actsync_SOURCES = backends/actsync.c
 backends_actsync_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += backends/archive
-backends_archive_SOURCES = backends/archive.c
-backends_archive_LIBADD = storage/libinnstorage.la lib/libinn.la
+backends_archive_LIBADD = storage/libstorage.la lib/libinn.la
 
 bin_PROGRAMS += backends/batcher
-backends_batcher_SOURCES = backends/batcher.c
-backends_batcher_LIBADD = storage/libinnstorage.la lib/libinn.la
+backends_batcher_LIBADD = storage/libstorage.la lib/libinn.la
 
 bin_PROGRAMS += backends/buffchan
 backends_filechan_SOURCES = backends/buffchan.c backends/map.c backends/map.h
 bakcends_filechan_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += backends/cvtbatch
-backends_cvtbatch_SOURCES = backends/cvtbatch.c
 backends_cvtbatch_LIBADD = storage/libstorage.la lib/libinn.la
 
 bin_PROGRAMS += backends/filechan
@@ -30,7 +26,6 @@ backends_filechan_SOURCES = backends/filechan.c backends/map.c backends/map.h
 bakcends_filechan_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += backends/innbind
-backends_innbind_SOURCES = backends/innbind.c
 backends_innbind_LIBADD = lib/libinn.la
 INSTALL_EXEC_HOOKS += install-exec-hook-innbind
 
@@ -50,36 +45,28 @@ install-exec-hook-innbind:
 	fi
 
 bin_PROGRAMS += backends/inndf
-backends_inndf_SOURCES = backends/inndf.c
 backends_inndf_LIBADD = storage/libstorage.la lib/libinn.la
 
 bin_PROGRAMS += backends/innxbatch
-backends_innxbatch_SOURCES = backends/innxbatch.c
 backends_innxbatch_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += backends/innxmit
-backends_innxmit_SOURCES = backends/innxmit.c
-backends_innxmit_LIBADD = history/libinnhist.la storage/libinnstorage.la \
+backends_innxmit_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += backends/ninpaths
-backends_ninpaths_SOURCES = backends/ninpaths.c
 
 bin_PROGRAMS += backends/nntpget
-backends_nntpget_SOURCES = backends/nntpget.c
-backends_nntpget_LIBADD = history/libinnhist.la storage/libinnstorage.la \
+backends_nntpget_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += backends/overchan
-backends_overchan_SOURCES = backends/overchan.c
 backends_overchan_LIBADD = storage/libstorage.la lib/libinn.la
 
 bin_PROGRAMS += backends/shlock
-backends_schlock_SOURCES = backends/shlock.c
 backends_shlock_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += backends/shrinkfile
-backends_shrinkfile_SOURCES = backends/shrinkfile.c
 backends_shrinkfile_LIBADD = lib/libinn.la
 
 bin_SCRIPTS += backends/actmerge backends/actsyncd backends/mod-active	\

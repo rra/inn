@@ -65,7 +65,6 @@ storage/ovsqlite/sql-main.c: $(srcdir)/storage/ovsqlite/sql-main.sql \
 storage/ovsqlite/sql-main.h: ovsqlite/sql-main.c ;
 
 bin_PROGRAMS += storage/tradindexed/tdx-util
-storage_tradindexed_tdx-util_SOURCES = tradindexed/tdx-util.c
 storage_tradindexed_tdx-util_LIBADD = history/libinnhist.la \
 	storage/libstorage.la lib/libinn.la
 

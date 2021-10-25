@@ -1,0 +1,41 @@
+##  Automake rules for the innfeed directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+bin_PROGRAMS += innfeed/innfeed
+innfeed_innfeed_SOURCES = innfeed/article.c innfeed/article.h		   \
+	innfeed/buffer.c innfeed/buffer.h innfeed/config_l.l		   \
+	innfeed/config_y.y innfeed/configfile.h innfeed/connection.c	   \
+	innfeed/connection.h innfeed/endpoint.c innfeed/endpoint.h	   \
+	innfeed/host.c innfeed/host.h innfeed/innfeed.h			   \
+	innfeed/innlistener.c innfeed/main.c innfeed/misc.c innfeed/misc.h \
+	innfeed/tape.c innfeed/tape.h
+innfeed_innfeed_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la
+
+bin_PROGRAMS += innfeed/imapfeed
+innfeed_imapfeed_SOURCES = innfeed/article.c innfeed/article.h		    \
+	innfeed/buffer.c innfeed/buffer.h innfeed/config_l.l		    \
+	innfeed/config_y.y innfeed/configfile.h innfeed/connection.h	    \
+	innfeed/endpoint.c innfeed/endpoint.h innfeed/host.c innfeed/host.h \
+	innfeed/imap_connection.c innfeed/innfeed.h innfeed/innlistener.c   \
+	innfeed/main.c innfeed/misc.c innfeed/misc.h innfeed/tape.c	    \
+	innfeed/tape.h
+innfeed_imapfeed_CPPFLAGS = $(SASL_CPPFLAGS) $(AM_CPPFLAGS)
+innfeed_imapfeed_LDFLAGS = $(SASL_LDFLAGS) $(AM_LDFLAGS)
+innfeed_imapfeed_LIBADD = history/libinnhist.la storage/libstorage.la \
+	lib/libinn.la $(SASL_LIBS)
+
+bin_SCRIPTS += innfeed/procbatch
+EXTRA_SOURCES += innfeed/procbatch.in
+CLEANFILES += innfeed/procbatch
+
+innfeed/procbatch: $(srcdir)/innfeed/procbatch support/fixscript
+	support/fixscript $(srcdir)/innfeed/procbatch $@
+
+##  Ensure the configuration parser is generated before anything else, since
+##  it will generate a header file used by other things.
+BUILT_SOURCES += config_y.h

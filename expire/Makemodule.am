@@ -6,40 +6,32 @@
 ##  directory.
 
 bin_PROGRAMS += expire/convdate
-expire_convdate_SOURCES = expire/convdate.c
 expire_convdate_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += expire/expire
-expire_expire_SOURCES = expire/expire.c
 expire_expire_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += expire/expireover
-expire_expireover_SOURCES = expire/expireover.c
 expire_expireover_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += expire/fastrm
-expire_fastrm_SOURCES = expire/fastrm.c
 expire_fastrm_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += expire/grephistory
-expire_grephistory_SOURCES = expire/grephistory.c
 expire_grephistory_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += expire/makedbz
-expire_makedbz_SOURCES = expire/makedbz.c
 expire_makedbz_LIBADD = lib/libinn.la
 
 bin_PROGRAMS += expire/makehistory
-expire_makehistory_SOURCES = expire/makehistory.c
 expire_makehistory_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 
 bin_PROGRAMS += expire/prunehistory
-expire_prunehistory_SOURCES = expire/prunehistory.c
 expire_prunehostiry_LIBADD = history/libinnhist.la storage/libstorage.la \
 	lib/libinn.la
 

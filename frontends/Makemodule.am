@@ -1,0 +1,99 @@
+##  Automake rules for the frontends directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+rnewsdir = $(pathbin)/rnews.libexec
+
+bin_PROGRAMS += frontends/ctlinnd
+frontends_ctlinnd_LIBADD = lib/libinn.la
+
+bin_PROGRAMS += frontends/getlist
+frontends_getlist_LIBADD = lib/libinn.la
+
+bin_PROGRAMS += frontends/inews
+frontends_inews_LIBADD = lib/libinn.la
+INSTALL_EXEC_HOOKS += install-exec-hook-inews
+
+install-exec-hook-inews:
+	chgrp $(RUNASGROUP) $(DESTDIR)$(bindir)/inews
+	chmod $(INEWSMODE) $(DESTDIR)$(bindir)/inews
+
+bin_PROGRAMS += frontends/innconfval
+frontends_innconfval_LIBADD = lib/libinn.la
+
+bin_PROGRAMS += frontends/ovdb_init
+frontends_ovdb_init_LIBADD = storage/libinnstorage.la lib/libinn.la
+
+bin_PROGRAMS += frontends/ovdb_monitor
+frontends_ovdb_monitor_LIBADD = storage/libinnstorage.la lib/libinn.la
+
+bin_PROGRAMS += frontends/ovdb_server
+frontends_ovdb_server_LIBADD = storage/libinnstorage.la lib/libinn.la
+
+bin_PROGRAMS += frontends/ovdb_stat
+frontends_ovdb_stat_LIBADD = storage/libinnstorage.la lib/libinn.la
+
+bin_PROGRAMS += frontends/rnews
+frontends_rnews_LIBADD = storage/libinnstorage.la lib/libinn.la
+INSTALL_EXEC_HOOKS += install-exec-hook-inews
+
+install-exec-hook-rnews:
+	chgrp $(RUNASGROUP) $(DESTDIR)$(bindir)/rnews
+	chmod $(RNEWSMODE) $(DESTDIR)$(bindir)/rnews
+
+bin_PROGRAMS += frontends/sm
+frontends_sm_LIBADD = storage/libinnstorage.la lib/libinn.la
+
+bin_SCRIPTS += frontends/cnfsheadconf frontends/cnfsstat frontends/mailpost \
+	frontends/pullnews frontends/scanspool
+EXTRA_DIST += frontends/cnfsheadconf.in frontends/cnfsstat.in \
+	frontends/mailpost.in frontends/pullnews.in frontends/scanspool.in
+CLEANFILES += frontends/cnfsheadconf frontends/cnfsstat frontends/mailpost \
+	frontends/mailpost.8 frontends/pullnews frontends/scanspool
+
+frontends/cnfsheadconf: $(srcdir)/frontends/cnfsheadconf support/fixscript
+	support/fixscript $(srcdir)/frontends/cnfsheadconf $@
+
+frontends/cnfsstat: $(srcdir)/frontends/cnfsstat support/fixscript
+	support/fixscript $(srcdir)/frontends/cnfsstat $@
+
+frontends/mailpost: $(srcdir)/frontends/mailpost support/fixscript
+	support/fixscript $(srcdir)/frontends/mailpost $@
+
+frontends/mailpost.8: $(srcdir)/frontends/mailpost.in
+	$(POD2MAN) -s 8 -n "MAILPOST" $(srcdir)/frontends/mailpost.in > $@
+
+frontends/pullnews: $(srcdir)/frontends/pullnews support/fixscript
+	support/fixscript $(srcdir)/frontends/pullnews $@
+
+frontends/scanspool: $(srcdir)/frontends/scanspool support/fixscript
+	support/fixscript $(srcdir)/frontends/scanspool $@
+
+rnews_PROGRAMS += frontends/decode
+frontends_decode_LIBADD = lib/libinn.la
+
+rnews_PROGRAMS += frontends/encode
+
+rnews_SCRIPTS += frontends/bunbatch frontends/c7unbatch frontends/gunbatch
+CLEANFILES += frontends/bunbatch frontends/c7unbatch frontends/gunbatch
+
+frontends/bunbatch: Makefile
+	(echo '#! $(SHELL)'; echo 'exec $(BZIP2) -d -c') > $@
+	chmod 755 $@
+
+frontends/c7unbatch: Makefile
+	(echo '#! $(SHELL)'; echo 'decode | $(UNCOMPRESS)') > $@
+	chmod 755 $@
+
+frontends/gunbatch: Makefile
+	(echo '#! $(SHELL)'; echo 'exec $(GZIP) -d -c') > $@
+	chmod 755 $@
+
+EXTRA_PROGRAMS += frontends/feedone
+frontends_feedone_LIBADD = lib/libinn.la
+
+EXTRA_PROGRAMS += frontends/sys2nf
+frontends_sys2nf_LIBADD = lib/libinn.la

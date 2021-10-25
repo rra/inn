@@ -1,0 +1,62 @@
+##  Automake rules for the contrib directory.
+##
+##  This file is included directly in the top-level Makefile.am as part of
+##  defining a non-recursive build.  Every rule should therefore be written
+##  with paths relative to the top level of the source tree, not this
+##  directory.
+
+EXTRA_PROGRAMS += contrib/auth_pass contrib/expirectl contrib/mlockfile \
+	contrib/newsresp contrib/pullart contrib/reset-cnfs contrib/respool
+contrib_auth_pass_LIBADD = lib/libinn.la $(CRYPT_LIBS)
+contrib_pullart_LIBADD = lib/libinn.la
+cintrib_respool_LIBADD = storage/libstorage.la lib/libinn.la
+
+EXTRA_SCRIPTS += contrib/archivegz contrib/backlogstat			    \
+	contrib/cleannewsgroups contrib/delayer contrib/findreadgroups	    \
+	contrib/makeexpctl contrib/makestorconf				    \
+	contrib/nnrp.access2readers.conf contrib/stathist contrib/thdexpire \
+	contrib/tunefeed
+EXTRA_DIST += contrib/archivegz.in contrib/backlogstat.in		\
+	contrib/cleannewsgroups.in contrib/delayer.in			\
+	contrib/findreadgroups.in contrib/makeexpctl.in			\
+	contrib/makestorconf.in contrib/nnrp.access2readers.conf.in	\
+	contrib/stathist.in contrib/thdexpire.in contrib/tunefeed.in
+CLEANFILES += contrib/archivegz contrib/backlogstat contrib/cleannewsgroups \
+	contrib/delayer contrib/findreadgroups contrib/makeexpctl	    \
+	contrib/makestorconf contrib/nnrp.access2readers.conf		    \
+	contrib/stathist contrib/thdexpire contrib/tunefeed
+
+contrib/archivegz: $(srcdir)/contrib/archivegz.in support/fixscript
+	support/fixscript -i $(srcdir)/contrib/archivegz.in $@
+
+contrib/backlogstat: $(srcdir)/contrib/backlogstat.in support/fixscript
+	support/fixscript $(srcdir)/contrib/backlogstat.in $@
+
+contrib/cleannewsgroups: $(srcdir)/contrib/cleannewsgroups.in support/fixscript
+	support/fixscript $(srcdir)/contrib/cleannewsgroups.in $@
+
+contrib/delayer: $(srcdir)/contrib/delayer.in support/fixscript
+	support/fixscript -i $(srcdir)/contrib/delayer.in $@
+
+contrib/findreadgroups: $(srcdir)/contrib/findreadgroups.in support/fixscript
+	support/fixscript $(srcdir)/contrib/findreadgroups.in $@
+
+contrib/makeexpctl: $(srcdir)/contrib/makeexpctl.in support/fixscript
+	support/fixscript $(srcdir)/contrib/makeexpctl.in $@
+
+contrib/makestorconf: $(srcdir)/contrib/makestorconf.in support/fixscript
+	support/fixscript $(srcdir)/contrib/makestorconf.in $@
+
+contrib/nnrp.access2readers.conf:				\
+		$(srcdir)/contrib/nnrp.access2readers.conf.in	\
+		support/fixscript
+	support/fixscript -i $(srcdir)/contrib/nnrp.access2readers.conf.in $@
+
+contrib/stathist: $(srcdir)/contrib/stathist.in support/fixscript
+	support/fixscript -i $(srcdir)/contrib/stathist.in $@
+
+contrib/thdexpire: $(srcdir)/contrib/thdexpire.in support/fixscript
+	support/fixscript $(srcdir)/contrib/thdexpire.in $@
+
+contrib/tunefeed: $(srcdir)/contrib/tunefeed.in support/fixscript
+	support/fixscript -i $(srcdir)/contrib/tunefeed.in $@

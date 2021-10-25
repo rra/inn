@@ -61,17 +61,25 @@ POD2TEXT        = pod2text -s -l
 
 AM_CPPFLAGS	= -I$(srcdir)/include
 
+##  yacc parsers should also generate a header file.
+
+AM_YFLAGS	= -d
+
 ##  Include modules for all subdirectories.
 
 include $(srcdir)/authprogs/Makemodule.am
 include $(srcdir)/backends/Makemodule.am
+include $(srcdir)/contrib/Makefile.am
 include $(srcdir)/control/Makemodule.am
 include $(srcdir)/expire/Makemodule.am
 include $(srcdir)/history/Makemodule.am
 include $(srcdir)/include/Makemodule.am
 include $(srcdir)/innd/Makemodule.am
+include $(srcdir)/innfeed/Makemodule.am
+include $(srcdir)/frontends/Makemodule.am
 include $(srcdir)/lib/Makemodule.am
 include $(srcdir)/nnrpd/Makemodule.am
+include $(srcdir)/scripts/Makemodule.am
 include $(srcdir)/storage/Makemodule.am
 
 ##  Various components of INN use different permissions or ownership.  The
